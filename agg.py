@@ -1,0 +1,184 @@
+import json
+from collections import defaultdict
+from decimal import Decimal, ROUND_HALF_UP
+
+# Paste your product list here
+products = [
+  {
+    "id": "prod-c04bb802-001",
+    "name": "Premium Item 1",
+    "category": "home",
+    "price": 416.18,
+    "stock": 0,
+    "rating": 1.5
+  },
+  {
+    "id": "prod-c04bb802-002",
+    "name": "Elite Item 2",
+    "category": "sports",
+    "price": 135.77,
+    "stock": 104,
+    "rating": 1.2
+  },
+  {
+    "id": "prod-c04bb802-003",
+    "name": "Basic Item 3",
+    "category": "sports",
+    "price": 170.68,
+    "stock": 68,
+    "rating": 2.7
+  },
+  {
+    "id": "prod-c04bb802-004",
+    "name": "Elite Item 4",
+    "category": "clothing",
+    "price": 491.77,
+    "stock": 89,
+    "rating": 3.5
+  },
+  {
+    "id": "prod-c04bb802-005",
+    "name": "Elite Item 5",
+    "category": "electronics",
+    "price": 169.61,
+    "stock": 16,
+    "rating": 1.7
+  },
+  {
+    "id": "prod-c04bb802-006",
+    "name": "Premium Item 6",
+    "category": "clothing",
+    "price": 232.84,
+    "stock": 87,
+    "rating": 4.2
+  },
+  {
+    "id": "prod-c04bb802-007",
+    "name": "Pro Item 7",
+    "category": "clothing",
+    "price": 141.73,
+    "stock": 51,
+    "rating": 4.2
+  },
+  {
+    "id": "prod-c04bb802-008",
+    "name": "Premium Item 8",
+    "category": "electronics",
+    "price": 358.97,
+    "stock": 116,
+    "rating": 1.2
+  },
+  {
+    "id": "prod-c04bb802-009",
+    "name": "Elite Item 9",
+    "category": "home",
+    "price": 353.41,
+    "stock": 133,
+    "rating": 2.1
+  },
+  {
+    "id": "prod-c04bb802-010",
+    "name": "Standard Item 10",
+    "category": "sports",
+    "price": 471.28,
+    "stock": 83,
+    "rating": 2.2
+  },
+  {
+    "id": "prod-c04bb802-011",
+    "name": "Elite Item 11",
+    "category": "books",
+    "price": 456,
+    "stock": 133,
+    "rating": 3.1
+  },
+  {
+    "id": "prod-c04bb802-012",
+    "name": "Premium Item 12",
+    "category": "home",
+    "price": 14.87,
+    "stock": 158,
+    "rating": 2.7
+  },
+  {
+    "id": "prod-c04bb802-013",
+    "name": "Premium Item 13",
+    "category": "clothing",
+    "price": 211.71,
+    "stock": 39,
+    "rating": 3.5
+  },
+  {
+    "id": "prod-c04bb802-014",
+    "name": "Elite Item 14",
+    "category": "home",
+    "price": 172.08,
+    "stock": 145,
+    "rating": 4.6
+  },
+  {
+    "id": "prod-c04bb802-015",
+    "name": "Basic Item 15",
+    "category": "sports",
+    "price": 283.21,
+    "stock": 130,
+    "rating": 4.6
+  },
+  {
+    "id": "prod-c04bb802-016",
+    "name": "Basic Item 16",
+    "category": "clothing",
+    "price": 113.71,
+    "stock": 196,
+    "rating": 2.7
+  },
+  {
+    "id": "prod-c04bb802-017",
+    "name": "Pro Item 17",
+    "category": "home",
+    "price": 198.85,
+    "stock": 51,
+    "rating": 2
+  },
+  {
+    "id": "prod-c04bb802-018",
+    "name": "Standard Item 18",
+    "category": "electronics",
+    "price": 419.32,
+    "stock": 148,
+    "rating": 2.1
+  },
+  {
+    "id": "prod-c04bb802-019",
+    "name": "Premium Item 19",
+    "category": "clothing",
+    "price": 229.84,
+    "stock": 2,
+    "rating": 3.3
+  },
+  {
+    "id": "prod-c04bb802-020",
+    "name": "Pro Item 20",
+    "category": "electronics",
+    "price": 256.21,
+    "stock": 168,
+    "rating": 2.2
+  }
+]
+
+aggregations = defaultdict(lambda: {"count": 0, "inventoryValue": Decimal("0.00")})
+
+for p in products:
+    cat = p["category"]
+    price = Decimal(str(p["price"]))
+    stock = Decimal(str(p["stock"]))
+    aggregations[cat]["count"] += 1
+    aggregations[cat]["inventoryValue"] += price * stock
+
+# Round to 2 decimals and convert to float
+for cat in aggregations:
+    aggregations[cat]["inventoryValue"] = float(
+        aggregations[cat]["inventoryValue"].quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    )
+
+print(json.dumps(aggregations, indent=2))
